@@ -17,12 +17,15 @@ def saveInFileAndGetComponents(image, filename, position, startPos, width, heigh
 
     return storeImage
 
-def getCorrelation(image1, image2, width, height):
-    mean1 = sum(image1) / (width * height)
-    mean2 = sum(image2) / (width * height)
-    cov = sum([(image1[i] - mean1) * (image2[i] - mean2) for i in range(len(image1))]) / (width * height)
-    std1 = math.sqrt(sum([(image1[i] - mean1) ** 2 for i in range(len(image1))]) / (width * height - 1))
-    std2 = math.sqrt(sum([(image2[i] - mean2) ** 2 for i in range(len(image2))]) / (width * height - 1))
-    corr = cov / (std1 * std2)
 
-    return corr
+def getCorrelation(image1, image2, width, height):
+    FirstMathExpect = sum(image1) / (width * height)
+    SecondMathExpect = sum(image2) / (width * height)
+
+    cov = sum([(image1[i] - FirstMathExpect) * (image2[i] - SecondMathExpect) for i in range(len(image1))]) / (width * height)
+
+    std1 = math.sqrt(sum([(image1[i] - FirstMathExpect) ** 2 for i in range(len(image1))]) / (width * height - 1))
+    std2 = math.sqrt(sum([(image2[i] - SecondMathExpect) ** 2 for i in range(len(image2))]) / (width * height - 1))
+
+    correlation = cov / (std1 * std2)
+    return correlation
