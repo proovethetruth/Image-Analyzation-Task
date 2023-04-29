@@ -1,21 +1,6 @@
 
-import math
 
-def saveInFileAndGetComponents(image, filename, position, startPos, width, height):
-    step = 0
-    storeImage = []
-    for i in range(startPos, len(image)):
-        if step != position:
-            image[i] = 0
-        else:
-            storeImage.append(image[i])
-        step = (step + 1) % 3
 
-    imageFile = open(filename, 'wb')
-    imageFile.write(bytes(image)) 
-    imageFile.close()
-
-    return storeImage
 
 
 def getCorrelation(image1, image2, width, height):
