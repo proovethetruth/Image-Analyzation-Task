@@ -1,30 +1,14 @@
 
-from FileIO import *
-from CalcFunctions import *
+
+from ImageTask import *
 
 import numpy as np
 
 if __name__ == "__main__":
     filename = 'kodim07.bmp'
 
-    imageFile = open(filename, 'rb')
-    header = imageFile.read(54)
-    pixelOffset = int.from_bytes(header[10:14], byteorder='little')
-    width = int.from_bytes(header[18:22], byteorder='little')
-    height = int.from_bytes(header[22:26], byteorder='little')
-    imageFile.seek(0)
-    fullImage = bytearray(imageFile.read())
-    imageFile.close()
-
-
-    imageR = saveInFileAndGetComponents(fullImage.copy(), 'components/' + filename[0:-4] + '_Red.bmp', 2, pixelOffset, width, height)
-    imageG = saveInFileAndGetComponents(fullImage.copy(), 'components/' + filename[0:-4] + '_Green.bmp', 1, pixelOffset, width, height)
-    imageB = saveInFileAndGetComponents(fullImage.copy(), 'components/' + filename[0:-4] + '_Blue.bmp', 0, pixelOffset, width, height)
-
-    print('r(red, green) = ', getCorrelation(imageR, imageG, width, height))
-    print('r(red, blue) = ', getCorrelation(imageR, imageB, width, height))
-    print('r(blue, green) = ', getCorrelation(imageB, imageG, width, height))
-
+    taskClass = ImageTask(filename)
+    taskClass.solve()
 
     yFile = bytearray(fullImage[:pixelOffset])
     cbFile = bytearray(fullImage[:pixelOffset])
