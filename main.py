@@ -1,7 +1,4 @@
 
-
-from ImageTask import *
-
 from FileIO import *
 from CalcFunctions import *
 
