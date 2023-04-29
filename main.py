@@ -1,8 +1,22 @@
 
-from FileIO import *
 from CalcFunctions import *
 
 import numpy as np
+
+def saveInFileAndGetComponents(image, filename, position, startPos):
+    step = 0
+    storeImage = []
+    for i in range(startPos, len(image)):
+        if step != position:
+            image[i] = 0
+        else:
+            storeImage.append(image[i])
+        step = (step + 1) % 3
+
+    imageFile = open(filename, 'wb')
+    imageFile.write(bytes(image)) 
+    imageFile.close()
+    return storeImage
 
 if __name__ == "__main__":
     filename = 'kodim07.bmp'
@@ -16,15 +30,13 @@ if __name__ == "__main__":
     fullImage = bytearray(imageFile.read())
     imageFile.close()
 
-
-    imageR = saveInFileAndGetComponents(fullImage.copy(), 'components/' + filename[0:-4] + '_Red.bmp', 2, pixelOffset, width, height)
-    imageG = saveInFileAndGetComponents(fullImage.copy(), 'components/' + filename[0:-4] + '_Green.bmp', 1, pixelOffset, width, height)
-    imageB = saveInFileAndGetComponents(fullImage.copy(), 'components/' + filename[0:-4] + '_Blue.bmp', 0, pixelOffset, width, height)
+    imageR = saveInFileAndGetComponents(fullImage.copy(), 'components/' + filename[0:-4] + '_Red.bmp', 2, pixelOffset)
+    imageG = saveInFileAndGetComponents(fullImage.copy(), 'components/' + filename[0:-4] + '_Green.bmp', 1, pixelOffset)
+    imageB = saveInFileAndGetComponents(fullImage.copy(), 'components/' + filename[0:-4] + '_Blue.bmp', 0, pixelOffset)
 
     print('r(red, green) = ', getCorrelation(imageR, imageG, width, height))
     print('r(red, blue) = ', getCorrelation(imageR, imageB, width, height))
     print('r(blue, green) = ', getCorrelation(imageB, imageG, width, height))
-
 
     yFile = bytearray(fullImage[:pixelOffset])
     cbFile = bytearray(fullImage[:pixelOffset])
@@ -84,6 +96,7 @@ if __name__ == "__main__":
     imageFile.write(bytes(yFile)) 
     imageFile.close()
 
+    print('--------------------------------------------')
     yArray = [round(yArray[i]) for i in range(len(yArray))]
     yArray = np.array(yArray)
     cbArray = [round(cbArray[i]) for i in range(len(cbArray))]
@@ -99,7 +112,59 @@ if __name__ == "__main__":
     imageB = np.array(imageB)
 
 
-    cbRestored = decimationEvenNumbered(cbArray, width, height)
-    crRestored = decimationEvenNumbered(crArray, width, height)
+    # cbRestored = decimationEvenNumbered(cbArray, width, height)
+    # crRestored = decimationEvenNumbered(crArray, width, height)
+    # print("\nEven-numbered decimation (x2)")
+    # yFile = convertForDecimation(yArray, crRestored, cbRestored, 
+    #                              fullImage, pixelOffset, width, height, imageR, imageG, imageB, crArray, cbArray)
+    
+    # imageFile = open('components/After Even-Numbered Decimation (x2).bmp', 'wb')
+    # imageFile.write(bytes(yFile)) 
+    # imageFile.close()
 
-    yFile = convertForDecimation(yArray, crRestored, cbRestored, "even_numbered decimation x2")
+    # cbRestored = decimationAriphmeticMean(cbArray, width, height)
+    # crRestored = decimationAriphmeticMean(crArray, width, height)
+    # print("\nAriphmetic Mean Decimation (x2)")
+    # yFile = convertForDecimation(yArray, crRestored, cbRestored, 
+    #                              fullImage, pixelOffset, width, height, imageR, imageG, imageB, crArray, cbArray)
+    
+    # imageFile = open('components/After Ariphmetic Mean Decimation (x2).bmp', 'wb')
+    # imageFile.write(bytes(yFile)) 
+    # imageFile.close()
+
+    # cbRestored2 = decimationEvenNumbered(cbArray, width, height, times=2)
+    # crRestored2 = decimationEvenNumbered(crArray, width, height, times=2)
+    # print("\nEven-numbered decimation decimation (x4)")
+    # yFile = convertForDecimation(yArray, crRestored2, cbRestored2, 
+    #                              fullImage, pixelOffset, width, height, imageR, imageG, imageB, crArray, cbArray)
+
+    # imageFile = open('components/After Even-Numbered Decimation (x4).bmp', 'wb')
+    # imageFile.write(bytes(yFile))
+    # imageFile.close()
+
+
+    # cbRestored2 = decimationAriphmeticMean(cbArray, width, height, times=2)
+    # crRestored2 = decimationAriphmeticMean(crArray, width, height, times=2)
+    # print("\nAriphmetic mean decimation (x4)")
+    # yFile = convertForDecimation(yArray, crRestored2, cbRestored2,
+    #                              fullImage, pixelOffset, width, height, imageR, imageG, imageB, crArray, cbArray)
+
+    # imageFile = open('components/After Ariphmetic  Decimation (x4).bmp', 'wb')
+    # imageFile.write(bytes(yFile))
+    # imageFile.close()
+
+    print('--------------------------------------------')
+    print('H(B) = ' + str(calcEntropy(imageB)))
+    print('H(G) = ' + str(calcEntropy(imageG)))
+    print('H(R) = ' + str(calcEntropy(imageR)))
+    print('H(Y) = ' + str(calcEntropy(yArray)))
+    print('H(Cb) = ' + str(calcEntropy(cbArray)))
+    print('H(Cr) = ' + str(calcEntropy(crArray)))
+
+    print('--------------------------------------------')
+    print('H(dB^1), H(dB^2), H(dB^3), H(dB^4) = ' + str(calcDiffMod(imageB, width, height)))
+    print('H(dG^1), H(dG^2), H(dG^3), H(dG^4) = ' + str(calcDiffMod(imageG, width, height)))
+    print('H(dR^1), H(dR^2), H(dR^3), H(dR^4) = ' + str(calcDiffMod(imageR, width, height)))
+    print('H(dY^1), H(dY^2), H(dY^3), H(dY^4) = ' + str(calcDiffMod(yArray, width, height)))
+    print('H(dCb^1), H(dCb^2), H(dCb^3), H(dCb^4) = ' + str(calcDiffMod(cbArray, width, height)))
+    print('H(dCr^1), H(dCr^2), H(dCr^3), H(dCr^4) = ' + str(calcDiffMod(crArray, width, height)))
