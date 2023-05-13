@@ -1,5 +1,6 @@
 
 import math
+from graphics import createBarChart
 
 def getCorrelation(image1, image2, width, height):
     FirstMathExpect = sum(image1) / (width * height)
@@ -143,5 +144,10 @@ def calcDiffMod(componentArray, width, height):
             diffModulation3.append(componentArray[i * width + j] - componentArray[(i - 1) * width + j - 1])          
             average = (componentArray[i * width + j - 1] + componentArray[(i - 1) * width + j] + componentArray[(i - 1) * width + j - 1]) / 3
             diffModulation4.append(componentArray[i * width + j] - average)
+
+    createBarChart(diffModulation1, "diff " + " frequency 1", (-127, 128))
+    createBarChart(diffModulation2, "diff " + " frequency 2", (-127, 128))
+    createBarChart(diffModulation3, "diff " + " frequency 3", (-127, 128))
+    createBarChart(diffModulation4, "diff " + " frequency 4", (-127, 128))
 
     return [calcEntropy(diffModulation1), calcEntropy(diffModulation2), calcEntropy(diffModulation3), calcEntropy(diffModulation4)]
